@@ -5,5 +5,522 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مستشارك القرآني الذكي</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600&display=swap" rel="stylesheet">
-    ...
+    <style>
+        :root {
+            --primary: #1e6b3a;
+            --secondary: #b68a2a;
+            --light: #f5f5f5;
+            --accent: #e6f4ea;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e6f4ea 100%);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Amiri', serif;
+            color: var(--primary);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header::after {
+            content: '';
+            display: block;
+            width: 120px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 15px auto;
+        }
+
+        .input-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        #questionInput {
+            width: 100%;
+            padding: 25px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-family: 'Amiri', serif;
+            direction: rtl;
+            height: 70px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        #questionInput:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 20px rgba(182, 138, 42, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #156738);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 10px 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+
+        .verse-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-right: 5px solid var(--secondary);
+            position: relative;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .verse-text {
+            font-family: 'Amiri', serif;
+            font-size: 2.2em;
+            line-height: 1.8;
+            text-align: right;
+            margin: 25px 0;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .surah-info {
+            color: var(--secondary);
+            font-size: 1.3em;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .tafsir {
+            background: var(--accent);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            font-size: 1.1em;
+            line-height: 1.8;
+            transition: max-height 0.3s ease;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .daily-verse {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-verse::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .tag {
+            background: var(--accent);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .copy-btn {
+            background: #f0f0f0;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .verse-text {
+                font-size: 1.6em;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            .daily-verse {
+                padding: 20px 10px;
+            }
+
+            .verse-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>مستشارك القرآني</h1>
+            <p>استعن بآيات الله في حل مشكلاتك</p>
+        </div>
+
+        <div class="daily-verse" id="dailyVerse">
+            <h3>آية اليوم:</h3>
+            <div id="verseOfDay"></div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="questionInput" placeholder="اكتب سؤالك أو مشكلتك هنا" autocomplete="off">
+        </div>
+
+        <div style="text-align: center">
+            <button class="btn" onclick="findVerse()">استشارة</button>
+            <button class="btn" onclick="resetForm()" style="background: #666;">اسأل من جديد</button>
+        </div>
+
+        <div class="loader" id="loader"></div>
+
+        <div id="resultContainer" style="display: none;">
+            <div class="verse-card">
+                <div class="tag-container" id="tagContainer"></div>
+                <div class="verse-text" id="verseText"></div>
+                <div class="surah-info" id="surahInfo"></div>
+                <div class="tafsir" id="tafsirText"></div>
+                <div class="video-container" id="videoContainer"></div>
+                <div class="action-buttons">
+                    <button class="btn copy-btn" onclick="copyVerse()">نسخ الآية</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Expanded Quranic verses database
+        const quranDatabase = [
+            {
+                keywords: ['صبر', 'صابر', 'صبرا', 'تحمل', 'ثبات'],
+                text: "وَاصْبُرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
+                surah: "الطور",
+                ayah: 48,
+                tafsir: "اصبر على ما حكم به عليك ربك من البلاء والقضاء، فإنك بمرأى من الله وحفظه",
+                youtubeId: "8dW7TkBvg4E",
+                tags: ['صبر', 'ثبات', 'قضاء الله']
+            },
+            {
+                keywords: ['خوف', 'قلق', 'خائف', 'رعب', 'اضطراب'],
+                text: "لَا تَخَفْ إِنَّكَ أَنْتَ الْأَعْلَى",
+                surah: "طه",
+                ayah: 68,
+                tafsir: "لا تخف من سحرهم فإنك أنت الغالب عليهم بالحق",
+                youtubeId: "6Z7D5m8XSjE",
+                tags: ['أمن', 'طمأنينة', 'نصرة']
+            },
+            {
+                keywords: ['أمن', 'أمان', 'طمأنينة', 'سلام'],
+                text: "الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُمْ بِذِكْرِ اللَّهِ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+                surah: "الرعد",
+                ayah: 28,
+                tafsir: "الذين آمنوا بقلوبهم وتطمئن قلوبهم بذكر الله فإن ذكر الله يطمئن القلوب",
+                youtubeId: "5NDrP8Cpp3E",
+                tags: ['أمان', 'ذكر الله', 'طمأنينة']
+            },
+            {
+                keywords: ['غم', 'حزن', 'كرب', 'هم', 'ضيق'],
+                text: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
+                surah: "الشرح",
+                ayah: 6,
+                tafsir: "فإن مع هذا العسر يسرا آخر، أي أن الفرج يأتي بعد الشدة",
+                youtubeId: "3f5eN0QL1Oc",
+                tags: ['فرج', 'راحة', 'تحمل']
+            },
+            {
+                keywords: ['مرض', 'ألم', 'شفاء', 'عافية'],
+                text: "وَإِذَا مَرِضْتُ فَهُوَ يَشْفِينِ",
+                surah: "الشعراء",
+                ayah: 80,
+                tafsir: "وإذا أصبت بالمرض فهو الذي يشفيني من غير سبب مرئي",
+                youtubeId: "9XyO-n8H3kU",
+                tags: ['شفاء', 'دعاء', 'عافية']
+            },
+            {
+                keywords: ['فقر', 'عوز', 'حاجة', 'عيلة'],
+                text: "قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَى أَنْفُسِهِمْ لَا تَقْنَطُوا مِنْ رَحْمَةِ اللَّهِ",
+                surah: "الزمر",
+                ayah: 53,
+                tafsir: "لا تبتأسوا من رحمة الله فإن الله يغني من يشاء",
+                youtubeId: "7GqQK3bx3U0",
+                tags: ['غنى', 'رحمة', 'أمل']
+            },
+            {
+                keywords: ['اختبار', 'ابتلاء', 'امتحان', 'صعوبات'],
+                text: "وَلَنَبْلُوَنَّكُمْ بِشَيْءٍ مِنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِنَ الْأَمْوَالِ",
+                surah: "البقرة",
+                ayah: 155,
+                tafsir: " سنبتليكم بشيء من الخوف والجوع ونقص من الأموال",
+                youtubeId: "2sfrdZJfGBk",
+                tags: ['ابتلاء', 'قضاء', 'حكمة']
+            },
+            {
+                keywords: ['غضب', 'حقد', 'كراهية', 'ضغينة'],
+                text: "وَإِنْ جَنَحُوا لِلسَّلْمِ فَاجْنَحْ لَهَا",
+                surah: "الأنفال",
+                ayah: 61,
+                tafsir: "وإن مالوا إلى السلم والمصالحة فميل إليها",
+                youtubeId: "1X8vY4q5sEQ",
+                tags: ['سلام', 'تسامح', 'عفو']
+            },
+            {
+                keywords: ['وحدة', 'عزلة', 'وحداني'],
+                text: "وَقُلْ رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ خَيْرُ الرَّاحِمِينَ",
+                surah: "المؤمنون",
+                ayah: 118,
+                tafsir: "يا رب اغفر لي وارحمني وأنت خير الراحمين",
+                youtubeId: "0v_Q4YJWF1U",
+                tags: ['دعاء', 'رحمة', 'عزاء']
+            },
+            {
+                keywords: ['هزيمة', 'فشل', 'خسارة', 'ضعف'],
+                text: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنْتُمُ الْأَعْلَوْنَ",
+                surah: "آل عمران",
+                ayah: 139,
+                tafsir: "لا تضعفوا ولا تحزنوا وأنتم الأعلون إذا كنتم مؤمنين",
+                youtubeId: "U0D0FJ4fR8A",
+                tags: ['قوة', 'ثبات', 'نصر']
+            }
+        ];
+
+        // Fallback verses for unmatched queries
+        const fallbackVerses = [
+            {
+                text: "وَاصْبُرْ وَمَا صَبْرُكَ إِلَّا بِاللَّهِ",
+                surah: "النحل",
+                ayah: 127,
+                tafsir: "واصبر على ما أصابك في ذات الله، فإن الصبر لا يكون إلا بتوفيق الله",
+                youtubeId: "9XyO-n8H3kU",
+                tags: ['صبر', 'ثبات']
+            },
+            {
+                text: "قُلْ هُوَ اللَّهُ أَحَدٌ",
+                surah: "الإخلاص",
+                ayah: 1,
+                tafsir: "قل هو الله أحد، أي أنه واحد في ذاته وصفاته",
+                youtubeId: "3f5eN0QL1Oc",
+                tags: ['توحيد', 'ذكر']
+            },
+            {
+                text: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+                surah: "الأنبياء",
+                ayah: 87,
+                tafsir: "لا إله إلا أنت سبحانك إني كنت من الظالمين",
+                youtubeId: "U0D0FJ4fR8A",
+                tags: ['دعاء', 'استغفار']
+            },
+            {
+                text: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَفَّلْتُ",
+                surah: "التوبة",
+                ayah: 129,
+                tafsir: "حسبنا الله لا إله إلا هو عليه توكلنا",
+                youtubeId: "1X8vY4q5sEQ",
+                tags: ['توكل', 'أمان']
+            },
+            {
+                text: "وَقُلْ رَبِّ زِدْنِي عِبْمًا",
+                surah: "طه",
+                ayah: 114,
+                tafsir: "يا رب زدني علما",
+                youtubeId: "2sfrdZJfGBk",
+                tags: ['علم', 'دعاء']
+            }
+        ];
+
+        // Enhanced AI Matching
+        function findVerse() {
+            const input = document.getElementById('questionInput').value.toLowerCase();
+            const loader = document.getElementById('loader');
+            const resultContainer = document.getElementById('resultContainer');
+
+            if (!input.trim()) {
+                alert('الرجاء إدخال سؤالك');
+                return;
+            }
+
+            loader.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            // Simulate processing delay
+            setTimeout(() => {
+                let matchedVerse = null;
+                let maxMatches = 0;
+
+                // Find best match
+                quranDatabase.forEach(verse => {
+                    const matches = verse.keywords.filter(keyword => 
+                        input.includes(keyword)).length;
+                    if (matches > maxMatches) {
+                        maxMatches = matches;
+                        matchedVerse = verse;
+                    }
+                });
+
+                // Show result
+                if (maxMatches > 0) {
+                    showVerse(matchedVerse);
+                } else {
+                    const randomFallback = fallbackVerses[Math.floor(Math.random() * fallbackVerses.length)];
+                    showVerse(randomFallback);
+                }
+
+                loader.style.display = 'none';
+                resultContainer.style.display = 'block';
+            }, 1500);
+        }
+
+        function showVerse(verse) {
+            document.getElementById('verseText').textContent = verse.text;
+            document.getElementById('tafsirText').textContent = verse.tafsir;
+            document.getElementById('surahInfo').textContent = `${verse.surah} - الآية ${verse.ayah}`;
+            
+            // Add tags
+            const tagContainer = document.getElementById('tagContainer');
+            tagContainer.innerHTML = verse.tags.map(tag => 
+                `<span class="tag">${tag}</span>`).join('');
+
+            // Embed YouTube video
+            document.getElementById('videoContainer').innerHTML = `
+                <iframe width="560" height="315" 
+                    src="https://www.youtube.com/embed/${verse.youtubeId}" 
+                    frameborder="0" allowfullscreen>
+                </iframe>
+            `;
+        }
+
+        function resetForm() {
+            document.getElementById('questionInput').value = '';
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        // Copy verse functionality
+        function copyVerse() {
+            const verseText = document.getElementById('verseText').textContent;
+            navigator.clipboard.writeText(verseText)
+                .then(() => alert('تم نسخ الآية بنجاح!'))
+                .catch(err => console.error('Error copying text: ', err));
+        }
+
+        // Daily Verse Feature
+        function updateDailyVerse() {
+            const today = new Date();
+            const startOfYear = new Date(today.getFullYear(), 0, 0);
+            const dayOfYear = Math.floor((today - startOfYear) / (24 * 60 * 60 * 1000));
+            const verseIndex = dayOfYear % quranDatabase.length;
+            
+            const verse = quranDatabase[verseIndex];
+            document.getElementById('verseOfDay').innerHTML = `
+                <p class="verse-text">${verse.text}</p>
+                <div class="surah-info">${verse.surah} - الآية ${verse.ayah}</div>
+            `;
+        }
+
+        // Initialize
+        updateDailyVerse();
+    </script>
+</body>
 </html>
